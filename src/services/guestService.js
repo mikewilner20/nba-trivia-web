@@ -35,27 +35,34 @@ export const getGuestTodayScore = () => {
   return guestScores[date];
 };
 
+// Get all guest scores
+export const getGuestScores = () => {
+  const guestScores = JSON.parse(localStorage.getItem(GUEST_SCORES_KEY) || '{}');
+  return Object.values(guestScores);
+};
+
 // Transfer guest scores to user account
 export const transferGuestScores = async (userId) => {
-  const guestScores = JSON.parse(localStorage.getItem(GUEST_SCORES_KEY) || '{}');
-  
-  // Transfer each score
-  const transfers = Object.values(guestScores).map(async (scoreData) => {
-    const scoreRef = doc(db, 'scores', `${userId}_${scoreData.date}`);
-    const exists = (await getDoc(scoreRef)).exists();
-    
-    if (!exists) {
-      await saveScore(
-        userId, 
-        scoreData.score, 
-        scoreData.questionScores,
-        scoreData.players || null
-      );
+  const guestScores = getGuestScores();
+  if (!guestScores || guestScores.length === 0) return;
+
+  try {
+    // Transfer each score to the user's account
+    for (const score of guestScores) {
+      const scoreId = `${userId}_${score.date}`;
+      const scoreRef = doc(db, 'scores', scoreId);
+      const scoreData = {
+        ...score,
+        userId,
+        createdAt: new Date().toISOString()
+      };
+      await setDoc(scoreRef, scoreData);
     }
-  });
-  
-  await Promise.all(transfers);
-  
-  // Clear guest scores after transfer
-  localStorage.removeItem(GUEST_SCORES_KEY);
+
+    // Clear guest scores after successful transfer
+    localStorage.removeItem(GUEST_SCORES_KEY);
+  } catch (error) {
+    console.error('Error transferring guest scores:', error);
+    throw error;
+  }
 };

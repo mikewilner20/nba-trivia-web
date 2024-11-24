@@ -22,7 +22,7 @@ export const useGame = () => {
     error: null,
     players: [],
     hints: [],
-    guessHistory: ['', ''],
+    guessHistory: Array(ATTEMPTS_PER_QUESTION).fill(''),
     message: '',
     showHint: false
   });
@@ -136,7 +136,7 @@ export const useGame = () => {
     const currentPlayer = gameState.players[gameState.currentIndex];
     const isCorrect = currentPlayer.name.toLowerCase() === guess.toLowerCase();
     const newGuessHistory = [...gameState.guessHistory];
-    newGuessHistory[2 - gameState.attempts] = guess;
+    newGuessHistory[ATTEMPTS_PER_QUESTION - 1 - gameState.attempts] = guess;
 
     if (isCorrect) {
       const points = gameState.attempts === 0 ? 2 : 1;
@@ -161,7 +161,7 @@ export const useGame = () => {
         currentIndex: prev.currentIndex + 1,
         attempts: 0,
         completed: isLastQuestion,
-        guessHistory: ['', ''],
+        guessHistory: Array(ATTEMPTS_PER_QUESTION).fill(''),
         message: `Correct! ${points} points`,
         showHint: false
       }));
@@ -211,7 +211,7 @@ export const useGame = () => {
             currentIndex: prev.currentIndex + 1,
             attempts: 0,
             message: `Wrong! The correct answer was ${currentPlayer.name}`,
-            guessHistory: ['', ''],
+            guessHistory: Array(ATTEMPTS_PER_QUESTION).fill(''),
             showHint: false
           }));
         }
