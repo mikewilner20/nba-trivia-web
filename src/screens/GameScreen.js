@@ -37,6 +37,24 @@ const getStepIcon = (score) => {
   return null;
 };
 
+const getChronologicalTeams = (player) => {
+  if (!player || !player.seasons) return [];
+  
+  // Create a map of teams and their first appearance year
+  const teamFirstAppearance = new Map();
+  player.seasons.forEach(season => {
+    const year = parseInt(season.year.split('-')[0]);
+    if (!teamFirstAppearance.has(season.team)) {
+      teamFirstAppearance.set(season.team, year);
+    }
+  });
+
+  // Sort teams by their first appearance year
+  return [...teamFirstAppearance.entries()]
+    .sort((a, b) => a[1] - b[1])
+    .map(entry => entry[0]);
+};
+
 function GameScreen() {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
@@ -262,7 +280,7 @@ function GameScreen() {
                     College: {currentPlayer.college}
                   </Typography>
                   <Typography variant="body1" gutterBottom>
-                    Teams: {currentPlayer.teams.join(', ')}
+                    Teams: {getChronologicalTeams(currentPlayer).join(', ')}
                   </Typography>
                   <Divider sx={{ my: 2 }} />
                   <Typography variant="body1" gutterBottom>
