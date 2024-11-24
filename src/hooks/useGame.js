@@ -136,7 +136,7 @@ export const useGame = () => {
     const currentPlayer = gameState.players[gameState.currentIndex];
     const isCorrect = currentPlayer.name.toLowerCase() === guess.toLowerCase();
     const newGuessHistory = [...gameState.guessHistory];
-    newGuessHistory[ATTEMPTS_PER_QUESTION - 1 - gameState.attempts] = guess;
+    newGuessHistory[gameState.attempts] = guess;
 
     if (isCorrect) {
       const points = gameState.attempts === 0 ? 2 : 1;
