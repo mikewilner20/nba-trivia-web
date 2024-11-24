@@ -1,5 +1,6 @@
 import { db } from '../config/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { saveScore } from './gameService';
 
 const GUEST_SCORES_KEY = 'guestScores';
 

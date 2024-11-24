@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import {
@@ -6,8 +6,16 @@ import {
   Typography,
   Paper,
   Box,
-  CircularProgress
+  CircularProgress,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow
 } from '@mui/material';
+import { ExitToApp, ArrowBack } from '@mui/icons-material';
 import { getUserStats, getUserScores } from '../services/gameService';
 
 function ProfileScreen() {
