@@ -94,7 +94,7 @@ function LoginScreen() {
             </Button>
             <Box sx={{ mt: 2, textAlign: 'center' }}>
               <Typography>
-                Don't have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <Link to="/signup" style={{ color: '#1976d2' }}>
                   Sign Up
                 </Link>

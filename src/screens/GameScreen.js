@@ -224,7 +224,7 @@ function GameScreen() {
                     Create an account to:
                   </Typography>
                   <Typography color="white" component="div" sx={{ ml: 2, mb: 2 }}>
-                    • Save today's score of {score} points
+                    • Save today&apos;s score of {score} points
                     <br />
                     • Track your progress over time
                     <br />
