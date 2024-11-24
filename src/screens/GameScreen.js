@@ -316,7 +316,7 @@ function GameScreen() {
                 {showHint && currentHint && (
                   <Box sx={{ my: 2, p: 2, bgcolor: 'info.light', borderRadius: 2 }}>
                     <Typography variant="body1" color="white">
-                      🤔 Hint: {currentHint}
+                      &#x1F929; Hint: {currentHint}
                     </Typography>
                   </Box>
                 )}
@@ -374,8 +374,8 @@ function GameScreen() {
                         onKeyPress={handleKeyPress}
                         error={guess && !players.some(p => p.name.toLowerCase() === guess.toLowerCase())}
                         helperText={guess && !players.some(p => p.name.toLowerCase() === guess.toLowerCase()) 
-                          ? "Please select a valid player name" 
-                          : ""}
+                          ? 'Please select a valid player name'
+                          : ''}
                       />
                     )}
                     onInputChange={(event, newInputValue) => {

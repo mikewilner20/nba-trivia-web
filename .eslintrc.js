@@ -21,6 +21,10 @@ module.exports = {
     'react/react-in-jsx-scope': 'off',
     'react/prop-types': 'off',
     'no-unused-vars': 'error',
+    'no-undef': 'error',
+    'no-console': ['warn', { allow: ['error', 'warn'] }],
+    'quotes': ['error', 'single', { 'avoidEscape': true }],
+    'jsx-quotes': ['error', 'prefer-double'],
   },
   settings: {
     react: {
