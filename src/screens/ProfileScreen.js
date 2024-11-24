@@ -1,24 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import {
   Container,
-  Paper,
   Typography,
+  Paper,
   Box,
-  AppBar,
-  Toolbar,
-  IconButton,
-  Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  CircularProgress,
+  CircularProgress
 } from '@mui/material';
-import { ExitToApp, ArrowBack } from '@mui/icons-material';
-import { useAuth } from '../contexts/AuthContext';
 import { getUserStats, getUserScores } from '../services/gameService';
 
 function ProfileScreen() {
@@ -87,24 +76,26 @@ function ProfileScreen() {
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            edge="start"
-            onClick={() => navigate('/')}
-            sx={{ mr: 2 }}
-          >
-            <ArrowBack />
-          </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Profile
-          </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 2, borderBottom: '1px solid #ccc' }}>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          Profile
+        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <Box sx={{ mr: 2 }}>
+            <IconButton
+              color="inherit"
+              edge="start"
+              onClick={() => navigate('/')}
+              sx={{ mr: 2 }}
+            >
+              <ArrowBack />
+            </IconButton>
+          </Box>
           <IconButton color="inherit" onClick={handleLogout}>
             <ExitToApp />
           </IconButton>
-        </Toolbar>
-      </AppBar>
+        </Box>
+      </Box>
 
       <Container maxWidth="md" sx={{ mt: 4 }}>
         {error && (

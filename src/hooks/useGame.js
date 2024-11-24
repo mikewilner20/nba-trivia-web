@@ -8,7 +8,6 @@ import { db } from '../config/firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 const ATTEMPTS_PER_QUESTION = 2;
-const PLAYERS_PER_DAY = 5;
 const DAILY_PLAYERS_COLLECTION = 'dailyPlayers';
 
 export const useGame = () => {
@@ -49,7 +48,7 @@ export const useGame = () => {
         // Select new random players for today
         const selectedPlayers = players
           .sort(() => Math.random() - 0.5)
-          .slice(0, PLAYERS_PER_DAY);
+          .slice(0, 5);
         
         console.log('Generating hints for players...');
         const hints = await Promise.all(
@@ -115,7 +114,7 @@ export const useGame = () => {
           ...prev,
           players: dailyPlayers,
           hints: hints || [],
-          questionScores: new Array(PLAYERS_PER_DAY).fill(0),
+          questionScores: new Array(5).fill(0),
           loading: false
         }));
       } catch (error) {
@@ -144,7 +143,7 @@ export const useGame = () => {
       const newQuestionScores = [...gameState.questionScores];
       newQuestionScores[gameState.currentIndex] = points;
       const newScore = gameState.score + points;
-      const isLastQuestion = gameState.currentIndex === PLAYERS_PER_DAY - 1;
+      const isLastQuestion = gameState.currentIndex === 4;
 
       if (isLastQuestion) {
         // Save score with players data
