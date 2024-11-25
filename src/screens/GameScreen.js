@@ -55,10 +55,27 @@ const getChronologicalTeams = (player) => {
     .map(entry => entry[0]);
 };
 
+const generateShareText = (scores) => {
+  const today = new Date();
+  const dayNumber = Math.floor((today - new Date('2024-01-01')) / (1000 * 60 * 60 * 24));
+  
+  const scoreEmojis = scores.map(score => {
+    if (score === 2) return '🟩';
+    if (score === 1) return '🟨';
+    return '🟥';
+  }).join('');
+  
+  const totalScore = scores.reduce((sum, score) => sum + score, 0);
+  const maxScore = scores.length * 2;
+  
+  return `NBA Trivia ${dayNumber} ${totalScore}/${maxScore}\n\n${scoreEmojis}\n\nPlay at: https://nba-trivia.netlify.app`;
+};
+
 function GameScreen() {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [guess, setGuess] = useState('');
+  const [shareMessage, setShareMessage] = useState('');
   const {
     currentPlayer,
     currentHint,
@@ -94,6 +111,25 @@ function GameScreen() {
       navigate('/login');
     } catch (error) {
       console.error('Error signing out:', error);
+    }
+  };
+
+  const handleShare = async () => {
+    const shareText = generateShareText(questionScores);
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          text: shareText
+        });
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      // Fallback to clipboard
+      navigator.clipboard.writeText(shareText);
+      setShareMessage('Results copied to clipboard!');
+      setTimeout(() => setShareMessage(''), 2000);
     }
   };
 
@@ -232,6 +268,21 @@ function GameScreen() {
                     </Typography>
                   );
                 })}
+              </Box>
+              <Box mt={2} display="flex" flexDirection="column" alignItems="center">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleShare}
+                  sx={{ mt: 2, mb: 1 }}
+                >
+                  Share Results
+                </Button>
+                {shareMessage && (
+                  <Typography color="success.main" variant="body2">
+                    {shareMessage}
+                  </Typography>
+                )}
               </Box>
               {!user && (
                 <Box sx={{ mt: 3, p: 2, bgcolor: 'primary.light', borderRadius: 1 }}>
