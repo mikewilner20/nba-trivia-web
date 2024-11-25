@@ -23,6 +23,10 @@ import { AccountCircle, ExitToApp, Check, Close } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useGame } from '../hooks/useGame';
 import { players } from '../data/players';
+import { db } from '../config/firebase';
+import { collection, getDocs } from 'firebase/firestore';
+
+const DAILY_PLAYERS_COLLECTION = 'dailyPlayers';
 
 const getStepColor = (score) => {
   if (score === 2) return 'success.main';
@@ -55,9 +59,11 @@ const getChronologicalTeams = (player) => {
     .map(entry => entry[0]);
 };
 
-const generateShareText = (scores) => {
-  const today = new Date();
-  const dayNumber = Math.floor((today - new Date('2024-01-01')) / (1000 * 60 * 60 * 24));
+const generateShareText = async (scores) => {
+  // Get count of dailyPlayers documents
+  const dailyPlayersRef = collection(db, DAILY_PLAYERS_COLLECTION);
+  const snapshot = await getDocs(dailyPlayersRef);
+  const dayNumber = snapshot.size;
   
   const scoreEmojis = scores.map(score => {
     if (score === 2) return '🟩';
@@ -68,7 +74,10 @@ const generateShareText = (scores) => {
   const totalScore = scores.reduce((sum, score) => sum + score, 0);
   const maxScore = scores.length * 2;
   
-  return `NBA Trivia ${dayNumber} ${totalScore}/${maxScore}\n\n${scoreEmojis}\n\nPlay at: https://nba-trivia.netlify.app`;
+  // Use current URL for the share link
+  const currentUrl = window.location.origin;
+  
+  return `NBA Trivia ${dayNumber}: ${totalScore}/${maxScore}\n\n${scoreEmojis}\n\nPlay at: ${currentUrl}`;
 };
 
 function GameScreen() {
@@ -115,20 +124,26 @@ function GameScreen() {
   };
 
   const handleShare = async () => {
-    const shareText = generateShareText(questionScores);
-    
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          text: shareText
-        });
-      } catch (error) {
-        console.error('Error sharing:', error);
+    try {
+      const shareText = await generateShareText(questionScores);
+      
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            text: shareText
+          });
+        } catch (error) {
+          console.error('Error sharing:', error);
+        }
+      } else {
+        // Fallback to clipboard
+        navigator.clipboard.writeText(shareText);
+        setShareMessage('Results copied to clipboard!');
+        setTimeout(() => setShareMessage(''), 2000);
       }
-    } else {
-      // Fallback to clipboard
-      navigator.clipboard.writeText(shareText);
-      setShareMessage('Results copied to clipboard!');
+    } catch (error) {
+      console.error('Error generating share text:', error);
+      setShareMessage('Error sharing results');
       setTimeout(() => setShareMessage(''), 2000);
     }
   };
@@ -274,7 +289,8 @@ function GameScreen() {
                   variant="contained"
                   color="primary"
                   onClick={handleShare}
-                  sx={{ mt: 2, mb: 1 }}
+                  sx={{ mt: 2 }}
+                  fullWidth
                 >
                   Share Results
                 </Button>
