@@ -78,3 +78,57 @@ export const generatePlayerHint = async (player) => {
     return `This legendary player made their mark in NBA history.`; // Fallback hint
   }
 };
+
+export const answerPlayerQuestion = async (player, question) => {
+  try {
+    const prompt = `You are an NBA expert assistant helping with a player guessing game. 
+    The current mystery player is ${player.name}. 
+    
+    Player data:
+    - Name: ${player.name}
+    - Teams: ${player.seasons.map(s => `${s.team} (${s.year})`).join(', ')}
+    - Position: ${player.position}
+    - College: ${player.college || 'N/A'}
+    
+    The user has asked this yes/no question: "${question}"
+    
+    Guidelines:
+    1. ONLY answer with "Yes." or "No."
+    2. Use the player data provided AND your general NBA knowledge
+    3. If the question is invalid or cannot be answered with yes/no, respond with "Invalid question. Please ask a yes/no question about the player."
+    4. Never reveal the player's name or give away too much information
+    5. Be accurate based on the player's career information
+    
+    Response format: Just "Yes.", "No.", or "Invalid question. Please ask a yes/no question about the player."`;
+
+    const response = await axios.post(
+      OPENAI_API_ENDPOINT,
+      {
+        model: 'gpt-4',
+        messages: [
+          {
+            role: 'system',
+            content: 'You are an NBA expert assistant. Only respond with "Yes.", "No.", or "Invalid question. Please ask a yes/no question about the player."'
+          },
+          {
+            role: 'user',
+            content: prompt
+          }
+        ],
+        temperature: 0.7,
+        max_tokens: 10
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    return response.data.choices[0].message.content.trim();
+  } catch (error) {
+    console.error('Error answering player question:', error);
+    throw new Error('Failed to answer question');
+  }
+};

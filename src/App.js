@@ -9,6 +9,7 @@ import LoginScreen from './screens/LoginScreen';
 import GameScreen from './screens/GameScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import SignUpScreen from './screens/SignUpScreen';
+import Game2Screen from './screens/Game2Screen';
 
 const theme = createTheme({
   palette: {
@@ -45,6 +46,7 @@ function App() {
                 </PrivateRoute>
               }
             />
+            <Route path="/game2" element={<Game2Screen />} />
           </Routes>
         </Router>
       </AuthProvider>
