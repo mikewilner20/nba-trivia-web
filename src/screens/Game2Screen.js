@@ -35,6 +35,7 @@ function Game2Screen() {
   const [questionCount, setQuestionCount] = useState(0);
   const [incorrectGuesses, setIncorrectGuesses] = useState(0);
   const [shareMessage, setShareMessage] = useState('');
+  const [questionHistory, setQuestionHistory] = useState([]);
   
   const {
     currentPlayer,
@@ -69,6 +70,8 @@ function Game2Screen() {
       // Only increment question count if it's not an invalid question
       if (!response.startsWith('Invalid question')) {
         setQuestionCount(prev => prev + 1);
+        // Add to question history
+        setQuestionHistory(prev => [...prev, { question: question.trim(), answer: response }]);
       }
       setQuestion('');
     } catch (error) {
@@ -213,8 +216,50 @@ function Game2Screen() {
               )}
 
               <Divider sx={{ my: 3 }} />
+              
+              <Typography variant="h6" gutterBottom>
+                Question History
+              </Typography>
+              {questionHistory.length > 0 ? (
+                <Box sx={{ mt: 2, maxHeight: 200, overflow: 'auto' }}>
+                  {questionHistory.map((item, index) => (
+                    <Paper 
+                      key={index} 
+                      sx={{ 
+                        p: 2, 
+                        mb: 1, 
+                        bgcolor: 'grey.100',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <Typography variant="body2" sx={{ mr: 2 }}>
+                        Q: {item.question}
+                      </Typography>
+                      <Typography 
+                        variant="body2" 
+                        sx={{ 
+                          fontWeight: 'bold',
+                          color: item.answer === 'Yes.' ? 'success.main' : 
+                                 item.answer === 'No.' ? 'error.main' : 
+                                 'text.secondary'
+                        }}
+                      >
+                        A: {item.answer}
+                      </Typography>
+                    </Paper>
+                  ))}
+                </Box>
+              ) : (
+                <Typography variant="body2" color="text.secondary">
+                  No questions asked yet
+                </Typography>
+              )}
 
-              <Box component="form" onSubmit={handleGuessSubmit}>
+              <Divider sx={{ my: 3 }} />
+
+              <Box component="form" onSubmit={handleGuessSubmit} sx={{ mt: 2 }}>
                 <TextField
                   fullWidth
                   label="Guess the player"
