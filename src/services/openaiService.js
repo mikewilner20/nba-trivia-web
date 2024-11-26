@@ -45,7 +45,7 @@ export const generatePlayerHint = async (player) => {
     const response = await axios.post(
       OPENAI_API_ENDPOINT,
       {
-        model: 'gpt-4',
+        model: 'gpt-3.5-turbo',  
         messages: [
           {
             role: 'system',
@@ -115,7 +115,7 @@ export const answerPlayerQuestion = async (player, question) => {
     const response = await axios.post(
       OPENAI_API_ENDPOINT,
       {
-        model: 'gpt-4',
+        model: 'gpt-3.5-turbo',  
         messages: [
           {
             role: 'system',
