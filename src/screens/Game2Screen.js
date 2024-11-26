@@ -66,7 +66,10 @@ function Game2Screen() {
     try {
       const response = await answerPlayerQuestion(currentPlayer, question);
       setAnswer(response);
-      setQuestionCount(prev => prev + 1);
+      // Only increment question count if it's not an invalid question
+      if (!response.startsWith('Invalid question')) {
+        setQuestionCount(prev => prev + 1);
+      }
       setQuestion('');
     } catch (error) {
       setError('Failed to get answer. Please try again.');

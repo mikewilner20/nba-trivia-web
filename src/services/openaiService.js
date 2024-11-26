@@ -93,24 +93,26 @@ export const answerPlayerQuestion = async (player, question) => {
     The user has asked this question: "${question}"
     
     Guidelines for determining if this is a valid yes/no question:
-    1. The question should be answerable with ONLY "Yes" or "No"
-    2. Questions about player characteristics (position, teams, years played, etc.) are valid
-    3. Questions comparing the player to others ("Did they play with X?") are valid
-    4. Questions about career achievements ("Did they win MVP?") are valid
-    5. Questions about player background ("Did they go to college?") are valid
+    1. The question MUST be answerable with ONLY "Yes" or "No"
+    2. Questions about player characteristics are valid:
+       - "Are they a guard?"
+       - "Did they play in the 90s?"
+       - "Are they over 7 feet tall?"
+    3. Questions about teams and career are valid:
+       - "Did they play for the Lakers?"
+       - "Did they win a championship?"
+       - "Were they a first round pick?"
+    4. Questions comparing to others are valid:
+       - "Did they play with Michael Jordan?"
+       - "Did they ever face Kobe Bryant?"
+    5. Questions about background are valid:
+       - "Did they go to college?"
+       - "Are they from Europe?"
+    
+    IMPORTANT: Any question that starts with "Are they", "Did they", "Was he", "Is he", or "Has he" is almost always a valid yes/no question.
     
     If the question follows these guidelines, answer with ONLY "Yes." or "No."
-    If the question cannot be answered with a simple yes or no, respond with "Invalid question. Please ask a question that can be answered with yes or no."
-    
-    Examples of valid questions:
-    - "Are they a guard?" -> "Yes." or "No."
-    - "Did they play in the Eastern Conference?" -> "Yes." or "No."
-    - "Did they win a championship?" -> "Yes." or "No."
-    
-    Examples of invalid questions:
-    - "What position do they play?"
-    - "How many championships did they win?"
-    - "Which teams did they play for?"`;
+    If the question cannot be answered with a simple yes or no, respond with "Invalid question. Please ask a question that can be answered with yes or no."`;
 
     const response = await axios.post(
       OPENAI_API_ENDPOINT,
