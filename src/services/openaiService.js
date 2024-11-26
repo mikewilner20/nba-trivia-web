@@ -90,16 +90,27 @@ export const answerPlayerQuestion = async (player, question) => {
     - Position: ${player.position}
     - College: ${player.college || 'N/A'}
     
-    The user has asked this yes/no question: "${question}"
+    The user has asked this question: "${question}"
     
-    Guidelines:
-    1. ONLY answer with "Yes." or "No."
-    2. Use the player data provided AND your general NBA knowledge
-    3. If the question is invalid or cannot be answered with yes/no, respond with "Invalid question. Please ask a yes/no question about the player."
-    4. Never reveal the player's name or give away too much information
-    5. Be accurate based on the player's career information
+    Guidelines for determining if this is a valid yes/no question:
+    1. The question should be answerable with ONLY "Yes" or "No"
+    2. Questions about player characteristics (position, teams, years played, etc.) are valid
+    3. Questions comparing the player to others ("Did they play with X?") are valid
+    4. Questions about career achievements ("Did they win MVP?") are valid
+    5. Questions about player background ("Did they go to college?") are valid
     
-    Response format: Just "Yes.", "No.", or "Invalid question. Please ask a yes/no question about the player."`;
+    If the question follows these guidelines, answer with ONLY "Yes." or "No."
+    If the question cannot be answered with a simple yes or no, respond with "Invalid question. Please ask a question that can be answered with yes or no."
+    
+    Examples of valid questions:
+    - "Are they a guard?" -> "Yes." or "No."
+    - "Did they play in the Eastern Conference?" -> "Yes." or "No."
+    - "Did they win a championship?" -> "Yes." or "No."
+    
+    Examples of invalid questions:
+    - "What position do they play?"
+    - "How many championships did they win?"
+    - "Which teams did they play for?"`;
 
     const response = await axios.post(
       OPENAI_API_ENDPOINT,
@@ -108,7 +119,7 @@ export const answerPlayerQuestion = async (player, question) => {
         messages: [
           {
             role: 'system',
-            content: 'You are an NBA expert assistant. Only respond with "Yes.", "No.", or "Invalid question. Please ask a yes/no question about the player."'
+            content: 'You are an NBA expert assistant. Only respond with "Yes.", "No.", or "Invalid question. Please ask a question that can be answered with yes or no."'
           },
           {
             role: 'user',
